@@ -10,7 +10,7 @@ Head-to-head comparison of five forecasting methods on three datasets, demonstra
 ## Quick start
 
 ```bash
-git clone <repo>
+git clone https://github.com/Dima806/timeseries_evaluation_arena.git
 make setup      # install uv + deps
 make notebooks  # run all 5 notebooks
 make run        # Streamlit app (port 8501)
