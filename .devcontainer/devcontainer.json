@@ -1,0 +1,23 @@
+{
+  "name": "timeseries-evaluation-arena",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb"
+  },
+  "postCreateCommand": "make setup",
+  "forwardPorts": [8501, 8888],
+  "portsAttributes": {
+    "8501": {"label": "Streamlit"},
+    "8888": {"label": "JupyterLab"}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  }
+}
