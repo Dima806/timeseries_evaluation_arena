@@ -15,9 +15,14 @@ class CostConfig(BaseModel):
 
 
 class XGBoostConfig(BaseModel):
-    n_estimators: int = 100
-    max_depth: int = 5
+    n_estimators: int = 200
+    max_depth: int = 3
     n_jobs: int = 2
+    learning_rate: float = 0.05
+    subsample: float = 0.8
+    colsample_bytree: float = 0.8
+    lags: list[int] = [1, 2, 3, 6, 12, 24]
+    rolling_windows: list[int] = [3, 6, 12]
 
 
 class LSTMConfig(BaseModel):
@@ -25,6 +30,7 @@ class LSTMConfig(BaseModel):
     num_layers: int = 2
     epochs: int = 50
     lr: float = 0.01
+    seq_len: int = 12
 
 
 class ARIMAConfig(BaseModel):

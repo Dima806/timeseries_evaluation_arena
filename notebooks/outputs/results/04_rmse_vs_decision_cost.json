@@ -1,0 +1,74 @@
+[
+  {
+    "Dataset": "Airline",
+    "Model": "Naive",
+    "RMSE": 30.0,
+    "DecisionCost": 90.0
+  },
+  {
+    "Dataset": "Airline",
+    "Model": "ARIMA",
+    "RMSE": 8.354,
+    "DecisionCost": 12.908
+  },
+  {
+    "Dataset": "Airline",
+    "Model": "Prophet",
+    "RMSE": 24.327,
+    "DecisionCost": 41.756
+  },
+  {
+    "Dataset": "Airline",
+    "Model": "XGBoost",
+    "RMSE": 15.424,
+    "DecisionCost": 32.458
+  },
+  {
+    "Dataset": "Electricity",
+    "Model": "Naive",
+    "RMSE": 6.191,
+    "DecisionCost": 18.572
+  },
+  {
+    "Dataset": "Electricity",
+    "Model": "ARIMA",
+    "RMSE": 5.083,
+    "DecisionCost": 14.088
+  },
+  {
+    "Dataset": "Electricity",
+    "Model": "Prophet",
+    "RMSE": 4.311,
+    "DecisionCost": 12.477
+  },
+  {
+    "Dataset": "Electricity",
+    "Model": "XGBoost",
+    "RMSE": 19.806,
+    "DecisionCost": 59.418
+  },
+  {
+    "Dataset": "Retail",
+    "Model": "Naive",
+    "RMSE": 34.579,
+    "DecisionCost": 82.211
+  },
+  {
+    "Dataset": "Retail",
+    "Model": "ARIMA",
+    "RMSE": 16.494,
+    "DecisionCost": 27.881
+  },
+  {
+    "Dataset": "Retail",
+    "Model": "Prophet",
+    "RMSE": 21.0,
+    "DecisionCost": 38.488
+  },
+  {
+    "Dataset": "Retail",
+    "Model": "XGBoost",
+    "RMSE": 16.466,
+    "DecisionCost": 35.397
+  }
+]

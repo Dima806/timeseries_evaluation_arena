@@ -65,20 +65,31 @@ series = get_series(dataset_name, inject)
 
 PERIOD = 52 if dataset_name == "Retail Sales" else 12
 
+_arima_seasonal = (0, 0, 0, 0) if PERIOD == 52 else tuple(cfg.models.arima.seasonal_order)
+
 ALL_FACTORIES = {
     "Seasonal Naive": lambda: SeasonalNaive(period=PERIOD),
-    "ARIMA": lambda: ARIMAModel(order=(1, 1, 1), seasonal_order=(0, 0, 0, 0)),
+    "ARIMA": lambda: ARIMAModel(
+        order=tuple(cfg.models.arima.order),
+        seasonal_order=_arima_seasonal,  # type: ignore[arg-type]
+    ),
     "Prophet": ProphetModel,
     "XGBoost": lambda: XGBoostModel(
         n_estimators=cfg.models.xgboost.n_estimators,
         max_depth=cfg.models.xgboost.max_depth,
         n_jobs=cfg.models.xgboost.n_jobs,
+        learning_rate=cfg.models.xgboost.learning_rate,
+        subsample=cfg.models.xgboost.subsample,
+        colsample_bytree=cfg.models.xgboost.colsample_bytree,
+        lags=cfg.models.xgboost.lags,
+        rolling_windows=cfg.models.xgboost.rolling_windows,
     ),
     "LSTM": lambda: LSTMModel(
         hidden_size=cfg.models.lstm.hidden_size,
         num_layers=cfg.models.lstm.num_layers,
         epochs=cfg.models.lstm.epochs,
         lr=cfg.models.lstm.lr,
+        seq_len=cfg.models.lstm.seq_len,
     ),
 }
 

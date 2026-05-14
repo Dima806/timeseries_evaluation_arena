@@ -29,4 +29,4 @@ class ARIMAModel:
     def predict(self, horizon: int) -> pd.Series:
         assert self._result is not None, "Call fit() before predict()."
         forecast = self._result.forecast(steps=horizon)
-        return pd.Series(forecast.to_numpy(), name="forecast")
+        return forecast.rename("forecast")

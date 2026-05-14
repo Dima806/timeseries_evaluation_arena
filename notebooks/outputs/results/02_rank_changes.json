@@ -1,0 +1,26 @@
+[
+  {
+    "Model": "ARIMA",
+    "\u0394Rank Airline": 0,
+    "\u0394Rank Electricity": 1,
+    "\u0394Rank Retail": 0
+  },
+  {
+    "Model": "Naive",
+    "\u0394Rank Airline": 1,
+    "\u0394Rank Electricity": 0,
+    "\u0394Rank Retail": 0
+  },
+  {
+    "Model": "Prophet",
+    "\u0394Rank Airline": 0,
+    "\u0394Rank Electricity": -1,
+    "\u0394Rank Retail": 0
+  },
+  {
+    "Model": "XGBoost",
+    "\u0394Rank Airline": -1,
+    "\u0394Rank Electricity": 0,
+    "\u0394Rank Retail": 0
+  }
+]

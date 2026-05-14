@@ -8,7 +8,7 @@ help: ## Show this help
 setup: ## First-time setup: install uv + all deps
 	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
 	uv sync --all-extras
-	uv run python -m ipykernel install --user --name timeseries-arena
+	uv run python -m ipykernel install --sys-prefix
 	@echo "\n✅ Ready. Run 'make test' to verify."
 
 sync: ## Sync deps from lockfile
@@ -25,16 +25,18 @@ check: ## Lint and auto-fix with ruff
 typecheck: ## Type-check with ty
 	uv run ty check src/
 
-test: ## Run pytest
+test: ## Run pytest (coverage summary printed at end)
 	uv run pytest
 
-test-cov: ## Run pytest with coverage
-	uv run pytest --cov=src --cov-report=term-missing
+test-cov: ## Run pytest with full HTML + terminal coverage report
+	uv run pytest --cov=src --cov-report=term-missing --cov-report=html
+	@echo "\n📊 HTML report: htmlcov/index.html"
 
 notebooks: ## Execute all notebooks
-	@for nb in notebooks/0*.ipynb; do \
+	@uv run python scripts/gen_notebooks.py
+	@for nb in notebooks/0[0-9]_*.ipynb; do \
 		echo "▶ Executing $$nb ..."; \
-		uv run jupyter nbconvert --to notebook --execute \
+		uv run jupyter nbconvert --to notebook --execute --inplace \
 			--ExecutePreprocessor.timeout=300 "$$nb" || exit 1; \
 	done
 	@echo "\n✅ All notebooks executed."

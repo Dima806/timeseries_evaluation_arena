@@ -1,0 +1,202 @@
+[
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.65,
+    "rmse": 102.09578355450259
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.6777777777777778,
+    "rmse": 97.26176568328269
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.7055555555555556,
+    "rmse": 94.51627151657723
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.7333333333333334,
+    "rmse": 79.29674872890035
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.7611111111111111,
+    "rmse": 73.35822088510989
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.788888888888889,
+    "rmse": 76.20367445208925
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.8166666666666667,
+    "rmse": 74.04503134354572
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.8444444444444444,
+    "rmse": 77.79460135510689
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.8722222222222222,
+    "rmse": 75.18468489064287
+  },
+  {
+    "model": "Naive",
+    "cutoff_ratio": 0.9,
+    "rmse": 64.23290952982487
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.65,
+    "rmse": 47.51591947886053
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.6777777777777778,
+    "rmse": 26.239765576330047
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.7055555555555556,
+    "rmse": 25.65453866188749
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.7333333333333334,
+    "rmse": 49.94833649207176
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.7611111111111111,
+    "rmse": 27.201044030564706
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.788888888888889,
+    "rmse": 58.7932944618248
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.8166666666666667,
+    "rmse": 64.19804057321973
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.8444444444444444,
+    "rmse": 53.14455110166986
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.8722222222222222,
+    "rmse": 14.434829271214156
+  },
+  {
+    "model": "ARIMA",
+    "cutoff_ratio": 0.9,
+    "rmse": 16.301605857321913
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.65,
+    "rmse": 62.425370826921295
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.6777777777777778,
+    "rmse": 42.35010379143553
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.7055555555555556,
+    "rmse": 42.38679729861044
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.7333333333333334,
+    "rmse": 52.031521528008746
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.7611111111111111,
+    "rmse": 43.35963396626021
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.788888888888889,
+    "rmse": 41.52423280859653
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.8166666666666667,
+    "rmse": 41.00061690687483
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.8444444444444444,
+    "rmse": 41.547349209952095
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.8722222222222222,
+    "rmse": 47.25603853991406
+  },
+  {
+    "model": "Prophet",
+    "cutoff_ratio": 0.9,
+    "rmse": 39.156100332156086
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.65,
+    "rmse": 73.48913522110115
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.6777777777777778,
+    "rmse": 74.46151067514833
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.7055555555555556,
+    "rmse": 81.32926831889131
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.7333333333333334,
+    "rmse": 61.822594979067595
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.7611111111111111,
+    "rmse": 66.01571815254096
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.788888888888889,
+    "rmse": 85.73814503771803
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.8166666666666667,
+    "rmse": 74.2029869935406
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.8444444444444444,
+    "rmse": 78.67957119757945
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.8722222222222222,
+    "rmse": 72.43038741305932
+  },
+  {
+    "model": "XGBoost",
+    "cutoff_ratio": 0.9,
+    "rmse": 53.36800478460001
+  }
+]

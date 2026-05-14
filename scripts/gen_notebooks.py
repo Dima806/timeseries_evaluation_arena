@@ -9,16 +9,18 @@ NOTEBOOKS_DIR.mkdir(exist_ok=True)
 
 KERNEL = {
     "kernelspec": {
-        "display_name": "timeseries-arena",
+        "display_name": "Python 3",
         "language": "python",
-        "name": "timeseries-arena",
+        "name": "python3",
     },
-    "language_info": {"name": "python", "pygments_lexer": "ipython3", "version": "3.11.0"},
+    "language_info": {"name": "python", "pygments_lexer": "ipython3", "version": "3.12.0"},
 }
 
 SETUP = """\
+import json
 import logging
 import warnings
+from pathlib import Path
 
 logging.getLogger("prophet").setLevel(logging.WARNING)
 logging.getLogger("cmdstanpy").setLevel(logging.WARNING)
@@ -30,6 +32,29 @@ import matplotlib.pyplot as plt
 
 %matplotlib inline
 plt.rcParams.update({"figure.dpi": 100})
+
+FIGURES_DIR = Path("outputs/figures")
+RESULTS_DIR = Path("outputs/results")
+FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def save_fig(fig: plt.Figure, name: str) -> None:
+    path = FIGURES_DIR / name
+    fig.savefig(path, bbox_inches="tight", dpi=120)
+    print(f"Saved figure → {path}")
+
+
+def save_json(data, name: str) -> None:
+    path = RESULTS_DIR / name
+    if isinstance(data, pd.DataFrame):
+        payload = data.to_dict(orient="records")
+    else:
+        payload = data
+    path.write_text(json.dumps(payload, indent=2, default=str))
+    print(f"Saved results → {path}")
+
+
 print("Ready.")
 """
 
@@ -59,12 +84,23 @@ INCLUDE_LSTM = False
 
 
 def make_factories(period: int = 12) -> dict:
+    # Period-aware lag sets: monthly captures 2-year cycle; weekly captures annual (52w)
+    if period == 52:
+        lags = [1, 2, 3, 4, 13, 26]   # no lag-52: needs 52+ train pts, starves early cutoffs
+        rolling = [4, 13, 26]
+        arima_seasonal = (0, 0, 0, 0)  # seasonal ARIMA with period=52 is prohibitively slow
+    else:
+        lags = [1, 2, 3, 6, 12, 24]
+        rolling = [3, 6, 12]
+        arima_seasonal = (1, 1, 1, period)
+
     factories = {
         "Naive":   lambda: SeasonalNaive(period=period),
-        "ARIMA":   lambda: ARIMAModel(order=(1, 1, 1), seasonal_order=(0, 0, 0, 0)),
+        "ARIMA":   lambda: ARIMAModel(order=(1, 1, 1), seasonal_order=arima_seasonal),
         "Prophet": ProphetModel,
-        "XGBoost": lambda: XGBoostModel(n_estimators=50, lags=[1, 2, 3, 6, 12],
-                                         rolling_windows=[3, 6]),
+        "XGBoost": lambda: XGBoostModel(n_estimators=100, max_depth=3,
+                                         learning_rate=0.05, subsample=0.8,
+                                         lags=lags, rolling_windows=rolling),
     }
     if INCLUDE_LSTM:
         factories["LSTM"] = lambda: LSTMModel(hidden_size=16, num_layers=2, epochs=20,
@@ -127,7 +163,7 @@ for ax in axes:
     ax.grid(alpha=0.3)
 
 plt.tight_layout()
-plt.savefig("outputs/figures/01_all_datasets.png", bbox_inches="tight")
+save_fig(fig, "01_all_datasets.png")
 plt.show()
 """),
     md("## ACF and PACF — Airline Passengers\n\nA spike at lag 12 confirms annual seasonality."),
@@ -139,7 +175,7 @@ plot_acf(airline, lags=40, ax=axes[0])
 plot_pacf(airline, lags=40, ax=axes[1], method="ols")
 plt.suptitle("ACF / PACF — Airline Passengers", y=1.02)
 plt.tight_layout()
-plt.savefig("outputs/figures/01_acf_pacf.png", bbox_inches="tight")
+save_fig(fig, "01_acf_pacf.png")
 plt.show()
 """),
     md("## Seasonal decomposition"),
@@ -155,7 +191,7 @@ for series, name, model, period in [
     fig.set_size_inches(14, 7)
     fig.suptitle(f"Decomposition ({model}) — {name}", y=1.01)
     plt.tight_layout()
-    plt.savefig(f"outputs/figures/01_decomp_{name.lower()}.png", bbox_inches="tight")
+    save_fig(fig, f"01_decomp_{name.lower()}.png")
     plt.show()
 """),
     md("## Retail: base vs anomaly-injected"),
@@ -173,7 +209,7 @@ ax.set_title("Retail Sales — Base vs Anomaly-Injected")
 ax.legend(loc="upper left", fontsize=9)
 ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig("outputs/figures/01_retail_anomalies.png", bbox_inches="tight")
+save_fig(fig, "01_retail_anomalies.png")
 plt.show()
 """),
     md("## Summary statistics"),
@@ -186,6 +222,7 @@ stats = pd.DataFrame({
     "Std":      [s.std()  for s in [airline, electricity, retail_base, retail]],
     "CV (%)":   [s.std() / s.mean() * 100 for s in [airline, electricity, retail_base, retail]],
 }).set_index("Dataset").round(2)
+save_json(stats.reset_index(), "01_summary_stats.json")
 stats
 """),
     md(
@@ -223,6 +260,7 @@ for ds_name, (series, period) in DATASETS.items():
         print(f"  {ds_name:12s} {model_name:10s}  RMSE={metrics['rmse']:.2f}")
 
 df_80 = pd.DataFrame(records_80)
+save_json(df_80, "02_protocol_a_80pct.json")
 """),
     md("### RMSE leaderboard — 80 % cutoff"),
     code("""\
@@ -248,6 +286,7 @@ for ds_name, (series, period) in DATASETS.items():
                            "MAE":  round(metrics["mae"],  2)})
 
 df_75 = pd.DataFrame(records_75)
+save_json(df_75, "02_protocol_a_75pct.json")
 """),
     md("### RMSE leaderboard — 75 % cutoff"),
     code("""\
@@ -263,6 +302,7 @@ leaderboard_75
 rank_cols = ["Rank_Airline", "Rank_Electricity", "Rank_Retail"]
 rank_change = leaderboard_75[rank_cols] - leaderboard_80[rank_cols]
 rank_change.columns = ["ΔRank Airline", "ΔRank Electricity", "ΔRank Retail"]
+save_json(rank_change.reset_index(), "02_rank_changes.json")
 rank_change.style.map(lambda v: "color: red"   if v > 0 else
                                 "color: green"  if v < 0 else
                                 "color: grey")
@@ -288,7 +328,13 @@ ax.set_title("Airline Passengers — RMSE vs Cutoff Position")
 ax.legend()
 ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig("outputs/figures/02_rmse_vs_cutoff.png", bbox_inches="tight")
+save_fig(fig, "02_rmse_vs_cutoff.png")
+save_json(
+    [{"model": m, "cutoff_ratio": float(r), "rmse": v}
+     for m, vals in rmse_traces.items()
+     for r, v in zip(cutoff_ratios, vals)],
+    "02_rmse_vs_cutoff.json",
+)
 plt.show()
 """),
     md(
@@ -330,6 +376,11 @@ for model_name, factory in make_factories(12).items():
     airline_results[model_name] = df
     print(f"  {model_name:10s}  mean RMSE={df['rmse'].mean():.2f}  "
           f"std={df['rmse'].std():.2f}")
+
+airline_summary = pd.concat(
+    {m: df.assign(model=m) for m, df in airline_results.items()}
+).reset_index(drop=True)
+save_json(airline_summary, "03_backtest_airline_cutoffs.json")
 """),
     md("## RMSE by cutoff — Airline Passengers"),
     code("""\
@@ -342,7 +393,7 @@ ax.set_ylabel("RMSE")
 ax.legend()
 ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig("outputs/figures/03_backtest_airline.png", bbox_inches="tight")
+save_fig(fig, "03_backtest_airline.png")
 plt.show()
 """),
     md("## Run Protocol B on all three datasets"),
@@ -370,6 +421,7 @@ for (ds_name, model_name), df in all_backtest.items():
     })
 
 summary = pd.DataFrame(summary_rows).round(3)
+save_json(summary, "03_backtest_summary.json")
 summary.pivot_table(index="Model", columns="Dataset", values="Mean RMSE").round(2)
 """),
     md("### Variance (std) — who is most stable?"),
@@ -390,7 +442,7 @@ ax.set_title("Retail Sales — RMSE distribution across cutoffs (Protocol B)")
 ax.set_ylabel("RMSE")
 ax.grid(alpha=0.3, axis="y")
 plt.tight_layout()
-plt.savefig("outputs/figures/03_boxplot_retail.png", bbox_inches="tight")
+save_fig(fig, "03_boxplot_retail.png")
 plt.show()
 """),
     md(
@@ -451,6 +503,7 @@ for ds_name, (series, period) in DATASETS.items():
     print(f"Done: {ds_name}")
 
 perf = pd.DataFrame(records).round(3)
+save_json(perf, "04_rmse_vs_decision_cost.json")
 """),
     md("## RMSE rankings vs Decision-Cost rankings"),
     code("""\
@@ -483,7 +536,7 @@ for ax, ds_name in zip(axes, ["Airline", "Electricity", "Retail"]):
 plt.suptitle("RMSE vs Decision Cost — models that look similar on RMSE diverge on cost",
              y=1.02)
 plt.tight_layout()
-plt.savefig("outputs/figures/04_rmse_vs_cost.png", bbox_inches="tight")
+save_fig(fig, "04_rmse_vs_cost.png")
 plt.show()
 """),
     md("## Sensitivity: how rankings change with the cost ratio"),
@@ -507,6 +560,7 @@ for ratio in cost_ratios:
         })
 
 ratio_df = pd.DataFrame(ratio_records)
+save_json(ratio_df, "04_cost_sensitivity.json")
 pivot = ratio_df.pivot(index="CostRatio", columns="Model", values="DecisionCost")
 
 fig, ax = plt.subplots(figsize=(11, 5))
@@ -517,7 +571,7 @@ ax.set_title("Retail — Decision Cost vs Cost Ratio")
 ax.legend(title="Model")
 ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig("outputs/figures/04_cost_sensitivity.png", bbox_inches="tight")
+save_fig(fig, "04_cost_sensitivity.png")
 plt.show()
 """),
     md(
@@ -559,8 +613,10 @@ MIN_TRAIN = 60
     code("""\
 factories = {
     "Prophet": ProphetModel,
-    "XGBoost": lambda: XGBoostModel(n_estimators=50, lags=[1, 2, 3, 6, 13, 52],
-                                     rolling_windows=[4, 13]),
+    "XGBoost": lambda: XGBoostModel(n_estimators=100, max_depth=3,
+                                     learning_rate=0.05, subsample=0.8,
+                                     lags=[1, 2, 3, 4, 13, 26],
+                                     rolling_windows=[4, 13, 26]),
 }
 
 backtest_results = {}
@@ -571,6 +627,11 @@ for model_name, factory in factories.items():
     backtest_results[model_name] = df
     print(f"{model_name:10s}  RMSE={df['rmse'].mean():.2f}  "
           f"DecisionCost={df['decision_cost'].mean():.2f}")
+
+save_json(
+    pd.concat({m: df.assign(model=m) for m, df in backtest_results.items()}).reset_index(drop=True),
+    "05_backtest_results.json",
+)
 """),
     md("## RMSE and Decision Cost by cutoff"),
     code("""\
@@ -599,7 +660,7 @@ for ev in ANOMALY_EVENTS:
 
 plt.xlabel("Cutoff date")
 plt.tight_layout()
-plt.savefig("outputs/figures/05_prophet_vs_xgb_backtest.png", bbox_inches="tight")
+save_fig(fig, "05_prophet_vs_xgb_backtest.png")
 plt.show()
 """),
     md(
@@ -610,7 +671,7 @@ plt.show()
     code("""\
 def plot_around_event(event_start: int, window: int = 20, lookahead: int = 15,
                       label: str = "") -> None:
-    \"\"\"Train up to event_start-1, forecast lookahead steps, plot.\"\"\"\
+    \"\"\"Train up to event_start-1, forecast lookahead steps, plot.\"\"\"
     train_end = max(MIN_TRAIN, event_start - 1)
     train = retail.iloc[:train_end]
     actual = retail.iloc[train_end: train_end + lookahead]
@@ -638,7 +699,7 @@ def plot_around_event(event_start: int, window: int = 20, lookahead: int = 15,
     ax.grid(alpha=0.3)
     plt.tight_layout()
     safe = label.lower().replace(" ", "_")
-    plt.savefig(f"outputs/figures/05_anomaly_{safe}.png", bbox_inches="tight")
+    save_fig(fig, f"05_anomaly_{safe}.png")
     plt.show()
 
 
@@ -667,6 +728,7 @@ for ev in ANOMALY_EVENTS:
         })
 
 anom_df = pd.DataFrame(rows).round(2)
+save_json(anom_df, "05_anomaly_comparison.json")
 anom_df.pivot_table(index=["Anomaly", "Model"], values=["RMSE", "DecisionCost"]).round(2)
 """),
     md(

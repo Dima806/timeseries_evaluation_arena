@@ -1,0 +1,38 @@
+[
+  {
+    "Anomaly": "Promo spike",
+    "Model": "Prophet",
+    "RMSE": 32.43,
+    "DecisionCost": 28.75
+  },
+  {
+    "Anomaly": "Promo spike",
+    "Model": "XGBoost",
+    "RMSE": 37.39,
+    "DecisionCost": 85.15
+  },
+  {
+    "Anomaly": "Competitor decline",
+    "Model": "Prophet",
+    "RMSE": 20.68,
+    "DecisionCost": 20.11
+  },
+  {
+    "Anomaly": "Competitor decline",
+    "Model": "XGBoost",
+    "RMSE": 29.89,
+    "DecisionCost": 26.79
+  },
+  {
+    "Anomaly": "Supply disruption",
+    "Model": "Prophet",
+    "RMSE": 355.97,
+    "DecisionCost": 477.49
+  },
+  {
+    "Anomaly": "Supply disruption",
+    "Model": "XGBoost",
+    "RMSE": 358.6,
+    "DecisionCost": 499.23
+  }
+]

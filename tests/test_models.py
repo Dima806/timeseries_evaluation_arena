@@ -118,6 +118,16 @@ def test_lstm_fit_predict(monthly_series: pd.Series):
     assert len(pred) == 3
 
 
+def test_lstm_fit_series_shorter_than_seq_len_does_not_crash():
+    from src.models.lstm_model import LSTMModel
+
+    # seq_len=20, series only 5 pts → early-exit branch (line 51) is hit
+    model = LSTMModel(hidden_size=4, num_layers=1, epochs=1, seq_len=20)
+    short = pd.Series(range(5), dtype=float)
+    model.fit(short)  # must not raise
+    assert model._net is None  # net was never built
+
+
 def test_lstm_predict_before_fit_raises():
     from src.models.lstm_model import LSTMModel
 

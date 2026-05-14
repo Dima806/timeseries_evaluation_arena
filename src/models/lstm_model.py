@@ -35,12 +35,17 @@ class LSTMModel:
         self._mean: float = 0.0
         self._std: float = 1.0
         self._last_seq: torch.Tensor | None = None
+        self._last_date: pd.Timestamp | None = None
+        self._freq: str | None = None
 
     def fit(self, series: pd.Series) -> None:
         values = series.to_numpy(dtype=float)
         self._mean = float(values.mean())
         self._std = float(values.std()) or 1.0
         scaled = (values - self._mean) / self._std
+        if isinstance(series.index, pd.DatetimeIndex):
+            self._last_date = series.index[-1]
+            self._freq = pd.infer_freq(series.index) or "MS"
 
         xs, ys = [], []
         for i in range(len(scaled) - self.seq_len):
@@ -81,4 +86,8 @@ class LSTMModel:
                 forecasts.append(pred_scaled * self._std + self._mean)
                 new_pt = torch.tensor([[[pred_scaled]]], dtype=torch.float32)
                 seq = torch.cat([seq[:, 1:, :], new_pt], dim=1)
-        return pd.Series(forecasts, name="forecast")
+        if self._last_date is not None and self._freq is not None:
+            idx = pd.date_range(self._last_date, periods=horizon + 1, freq=self._freq)[1:]
+        else:
+            idx = None
+        return pd.Series(forecasts, index=idx, name="forecast")

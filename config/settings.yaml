@@ -8,14 +8,20 @@ cost:
 
 models:
   xgboost:
-    n_estimators: 100
-    max_depth: 5
+    n_estimators: 200
+    max_depth: 3
     n_jobs: 2
+    learning_rate: 0.05
+    subsample: 0.8
+    colsample_bytree: 0.8
+    lags: [1, 2, 3, 6, 12, 24]
+    rolling_windows: [3, 6, 12]
   lstm:
     hidden_size: 32
     num_layers: 2
     epochs: 50
     lr: 0.01
+    seq_len: 12
   arima:
     order: [1, 1, 1]
     seasonal_order: [1, 1, 1, 12]

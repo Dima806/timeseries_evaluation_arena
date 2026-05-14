@@ -1,0 +1,102 @@
+[
+  {
+    "CostRatio": 1.0,
+    "Model": "Naive",
+    "DecisionCost": 34.5786909195947
+  },
+  {
+    "CostRatio": 1.0,
+    "Model": "ARIMA",
+    "DecisionCost": 16.493988382996758
+  },
+  {
+    "CostRatio": 1.0,
+    "Model": "Prophet",
+    "DecisionCost": 21.000222506773884
+  },
+  {
+    "CostRatio": 1.0,
+    "Model": "XGBoost",
+    "DecisionCost": 16.465516537666048
+  },
+  {
+    "CostRatio": 1.5,
+    "Model": "Naive",
+    "DecisionCost": 46.48684603907359
+  },
+  {
+    "CostRatio": 1.5,
+    "Model": "ARIMA",
+    "DecisionCost": 19.3406801745013
+  },
+  {
+    "CostRatio": 1.5,
+    "Model": "Prophet",
+    "DecisionCost": 25.372287676442493
+  },
+  {
+    "CostRatio": 1.5,
+    "Model": "XGBoost",
+    "DecisionCost": 21.198278509637817
+  },
+  {
+    "CostRatio": 2.0,
+    "Model": "Naive",
+    "DecisionCost": 58.395001158552496
+  },
+  {
+    "CostRatio": 2.0,
+    "Model": "ARIMA",
+    "DecisionCost": 22.187371966005845
+  },
+  {
+    "CostRatio": 2.0,
+    "Model": "Prophet",
+    "DecisionCost": 29.7443528461111
+  },
+  {
+    "CostRatio": 2.0,
+    "Model": "XGBoost",
+    "DecisionCost": 25.931040481609585
+  },
+  {
+    "CostRatio": 3.0,
+    "Model": "Naive",
+    "DecisionCost": 82.21131139751029
+  },
+  {
+    "CostRatio": 3.0,
+    "Model": "ARIMA",
+    "DecisionCost": 27.880755549014935
+  },
+  {
+    "CostRatio": 3.0,
+    "Model": "Prophet",
+    "DecisionCost": 38.48848318544831
+  },
+  {
+    "CostRatio": 3.0,
+    "Model": "XGBoost",
+    "DecisionCost": 35.39656442555312
+  },
+  {
+    "CostRatio": 5.0,
+    "Model": "Naive",
+    "DecisionCost": 129.84393187542588
+  },
+  {
+    "CostRatio": 5.0,
+    "Model": "ARIMA",
+    "DecisionCost": 39.26752271503312
+  },
+  {
+    "CostRatio": 5.0,
+    "Model": "Prophet",
+    "DecisionCost": 55.97674386412274
+  },
+  {
+    "CostRatio": 5.0,
+    "Model": "XGBoost",
+    "DecisionCost": 54.3276123134402
+  }
+]

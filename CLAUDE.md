@@ -50,10 +50,19 @@ Dataset 3 injected anomalies (known ground truth):
 | # | Model | Key strength | Key weakness |
 |---|---|---|---|
 | 1 | Seasonal Naive | Zero-cost baseline | No trend/shock adaptation |
-| 2 | SARIMAX | Interpretable | Slow to adapt to shocks |
+| 2 | SARIMAX | Interpretable, strong on clean seasonal data | Slow to adapt to shocks |
 | 3 | Prophet | Easy seasonality | Over-trusts calendar patterns |
-| 4 | XGBoost + lags | Adapts to recent data | Needs manual feature engineering |
+| 4 | XGBoost + lags | Adapts to recent data | Starved on small early training sets; misses unseen trend breaks |
 | 5 | LSTM (2L-32H) | No manual features | Slow on CPU, needs more data |
+
+### XGBoost hyperparameters (tuned)
+- Monthly: `lags=[1,2,3,6,12,24]`, `rolling_windows=[3,6,12]`
+- Weekly: `lags=[1,2,3,4,13,26]`, `rolling_windows=[4,13,26]` (lag-52 capped: starves early cutoffs)
+- `max_depth=3`, `learning_rate=0.05`, `subsample=0.8`, `colsample_bytree=0.8`, `n_estimators=200`
+
+### ARIMA hyperparameters
+- Monthly: `order=(1,1,1)`, `seasonal_order=(1,1,1,12)`
+- Weekly: `order=(1,1,1)`, `seasonal_order=(0,0,0,0)` (period-52 seasonal ARIMA is prohibitively slow)
 
 ## Evaluation Framework
 
@@ -70,7 +79,39 @@ def decision_cost(y_true, y_pred, cost_under=3.0, cost_over=1.0):
 ```
 Default ratio 3:1 (under-forecast costs 3× over-forecast). Configurable in `config/settings.yaml`. Explored: 1:1 (≡ MAE), 3:1 (demand), 1:3 (perishable inventory).
 
-**The provocative result:** Prophet wins RMSE on Protocol A for all 3 datasets. Under Protocol B with decision-cost 3:1, it drops to 3rd–4th on datasets with injected shocks because it under-forecasts during anomalies (trusting the calendar over recent observations).
+## Benchmark Results
+
+### Protocol A — single 80% cutoff RMSE (lower is better)
+
+| Model | Airline | Electricity | Retail |
+|---|---|---|---|
+| Naive | 75.23 | 9.71 | 177.75 |
+| ARIMA | **31.79** | **3.20** | 185.90 |
+| Prophet | 41.33 | 3.35 | **176.08** |
+| XGBoost | 75.75 | 15.38 | 179.91 |
+
+### Protocol B — expanding-window mean RMSE ± std (lower is better)
+
+| Model | Airline | Electricity | Retail |
+|---|---|---|---|
+| Naive | 30.0 ± 15.2 | 6.2 ± 4.0 | 34.6 ± 20.2 |
+| ARIMA | **8.4 ± 5.7** | 5.1 ± 1.7 | **16.5 ± 6.7** |
+| Prophet | 24.3 ± 17.9 | **4.3 ± 2.2** | 21.0 ± 15.6 |
+| XGBoost | 15.4 ± 15.6 | 19.8 ± 2.5 | **16.5 ± 3.6** |
+
+### Protocol B — mean decision cost 3:1 (lower is better)
+
+| Model | Airline | Electricity | Retail |
+|---|---|---|---|
+| Naive | 90.0 | 18.6 | 82.2 |
+| ARIMA | **12.9** | 14.1 | **27.9** |
+| Prophet | 41.8 | **12.5** | 38.5 |
+| XGBoost | 32.5 | 59.4 | 35.4 |
+
+**Provocative results:**
+- Protocol A crowns different winners than Protocol B — ARIMA wins Protocol A on Airline but Prophet led the narrative in simpler evaluations.
+- XGBoost is competitive on RMSE (Airline/Retail Protocol B) yet produces the worst decision cost on Electricity (59.4 — 5× Prophet's 12.5): it systematically under-forecasts during trend-break periods because lag features can't see a break they've never trained on.
+- XGBoost on Electricity is consistently worse than Naive on Protocol B RMSE (19.8 vs 6.2) — this is a structural issue, not a hyperparameter problem. Lag features cannot model a trend break that occurred before the training window.
 
 ## Makefile Commands
 

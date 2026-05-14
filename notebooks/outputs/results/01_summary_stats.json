@@ -1,0 +1,34 @@
+[
+  {
+    "Dataset": "Airline",
+    "Points": 144,
+    "Freq": "Monthly",
+    "Mean": 280.3,
+    "Std": 119.97,
+    "CV (%)": 42.8
+  },
+  {
+    "Dataset": "Electricity",
+    "Points": 397,
+    "Freq": "Monthly",
+    "Mean": 132.12,
+    "Std": 25.12,
+    "CV (%)": 19.01
+  },
+  {
+    "Dataset": "Retail (base)",
+    "Points": 208,
+    "Freq": "Weekly",
+    "Mean": 551.76,
+    "Std": 44.92,
+    "CV (%)": 8.14
+  },
+  {
+    "Dataset": "Retail (anomalies)",
+    "Points": 208,
+    "Freq": "Weekly",
+    "Mean": 545.64,
+    "Std": 93.7,
+    "CV (%)": 17.17
+  }
+]

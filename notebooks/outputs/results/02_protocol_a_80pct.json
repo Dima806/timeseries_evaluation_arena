@@ -1,0 +1,74 @@
+[
+  {
+    "Dataset": "Airline",
+    "Model": "Naive",
+    "RMSE": 75.23,
+    "MAE": 64.76
+  },
+  {
+    "Dataset": "Airline",
+    "Model": "ARIMA",
+    "RMSE": 31.79,
+    "MAE": 25.27
+  },
+  {
+    "Dataset": "Airline",
+    "Model": "Prophet",
+    "RMSE": 41.33,
+    "MAE": 33.89
+  },
+  {
+    "Dataset": "Airline",
+    "Model": "XGBoost",
+    "RMSE": 75.75,
+    "MAE": 59.01
+  },
+  {
+    "Dataset": "Electricity",
+    "Model": "Naive",
+    "RMSE": 9.71,
+    "MAE": 8.39
+  },
+  {
+    "Dataset": "Electricity",
+    "Model": "ARIMA",
+    "RMSE": 3.2,
+    "MAE": 2.64
+  },
+  {
+    "Dataset": "Electricity",
+    "Model": "Prophet",
+    "RMSE": 3.35,
+    "MAE": 2.63
+  },
+  {
+    "Dataset": "Electricity",
+    "Model": "XGBoost",
+    "RMSE": 15.38,
+    "MAE": 11.85
+  },
+  {
+    "Dataset": "Retail",
+    "Model": "Naive",
+    "RMSE": 177.75,
+    "MAE": 101.97
+  },
+  {
+    "Dataset": "Retail",
+    "Model": "ARIMA",
+    "RMSE": 185.9,
+    "MAE": 102.64
+  },
+  {
+    "Dataset": "Retail",
+    "Model": "Prophet",
+    "RMSE": 176.08,
+    "MAE": 94.88
+  },
+  {
+    "Dataset": "Retail",
+    "Model": "XGBoost",
+    "RMSE": 179.91,
+    "MAE": 100.42
+  }
+]
